@@ -8394,29 +8394,34 @@ CMD:getv(playerid, params[])
 	return 1;
 }
 
-CMD:admins(playerid, params[])
+CMD:admins(playerid)
 {
-	new str[128];
-	SendClientMessage(playerid, COLOR_GREEN, "Administrators:");
-	for(new player = 0; player < MAX_PLAYERS; player++)
-	{
-		if(IsPlayerConnected(player))
-		{
-		    if(Account[player][Admin] > 0)
-	  		{
-	  			if(Character[player][AdminDuty] == 0) 
-	  			{
-	  				format(str, sizeof(str), "%s (Off Duty): %s", AdminNames[Account[player][Admin]][0],  GetRoleplayName(player));
-  				}
-  				else 
-				{
-					format(str, sizeof(str), "%s (Administrating): %s", AdminNames[Account[player][Admin]][0], GetRoleplayName(player));
-				}
-				SendClientMessage(playerid, COLOR_GRAY, str);
-		    }
-	    }
+	new 
+		iCount,
+		szString[128];
 
+	SendClientMessage(playerid, COLOR_GREEN, "Administrators:");
+
+	for(new i = 0, j = GetPlayerPoolSize(); i <= j; i++)
+	{
+		if(IsPlayerConnected(i))
+		{
+			if(Account[playerid][Admin] > 0)
+			{
+				iCount++;
+
+				switch(Character[playerid][AdminDuty])
+				{
+					case 0: format(szString, sizeof(szString), "%s (Off Duty): %s", AdminNames[Account[i][Admin]][0], GetRoleplayName(i));
+					case 1: format(szString, sizeof(szString), "%s (Administrating): %s", AdminNames[Account[i][Admin]][0], GetRoleplayName(i));
+				}
+				SendClientMessage(playerid, COLOR_GRAY, szString);
+			}
+		}
 	}
+	if(!iCount)
+		return SendClientMessage(playerid, COLOR_GRAY, "There are no administrators online!");
+
 	return 1;
 }
 
